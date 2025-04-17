@@ -168,6 +168,16 @@
       border-radius: 4px;
       cursor: pointer;
     }
+
+    .connecting {
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -243,9 +253,16 @@
         alert('Введите пароль!');
         return;
       }
-      alert(`Подключение к "${selectedNetwork}" с паролем "${pass}"...`);
+      const wifiIcon = document.getElementById('wifiIcon');
+      wifiIcon.textContent = '🔄';
+      wifiIcon.classList.add('connecting');
       document.getElementById('wifiMenu').style.display = 'none';
-      document.getElementById('wifiIcon').textContent = '📡'; // Значок подключения
+
+      setTimeout(() => {
+        wifiIcon.classList.remove('connecting');
+        wifiIcon.textContent = '📡'; // Значок подключения с сигналом
+        alert(`Подключено к "${selectedNetwork}"`);
+      }, 2000);
     }
 
     setInterval(updateTime, 1000);
