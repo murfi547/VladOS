@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VladOS</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #0d1e35, #ff6a00);
+      font-family: sans-serif;
+      overflow: hidden;
+    }
+
+    /* Кнопка Пуск */
+    #start-button {
+      position: fixed;
+      bottom: 12px;
+      left: 12px;
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      backdrop-filter: blur(8px);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    #start-button img {
+      width: 70%;
+      height: 70%;
+      object-fit: contain;
+    }
+
+    /* Меню Пуск */
+    #start-menu {
+      position: fixed;
+      bottom: 80px;
+      left: 12px;
+      width: 280px;
+      background: rgba(30, 30, 30, 0.85);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 16px;
+      color: white;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      transform: translateY(30px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    #start-menu.active {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #start-menu h2 {
+      margin-top: 0;
+      font-size: 22px;
+    }
+
+    .start-apps button {
+      width: 100%;
+      padding: 10px 12px;
+      margin: 6px 0;
+      background: rgba(255,255,255,0.05);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .start-apps button:hover {
+      background: rgba(255,255,255,0.15);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Кнопка Пуск -->
+  <button id="start-button">
+    <img src="https://winrixai.neocities.org/start.png" alt="Пуск">
+  </button>
+
+  <!-- Меню Пуск -->
+  <div id="start-menu">
+    <h2>VladOS</h2>
+    <div class="start-apps">
+      <button>📧 VladMail</button>
+      <button>📁 VladFiles</button>
+      <button>🌐 VladBrowser</button>
+      <button>⚙️ Настройки</button>
+    </div>
+  </div>
+
+  <script>
+    const startButton = document.getElementById('start-button');
+    const startMenu = document.getElementById('start-menu');
+
+    startButton.addEventListener('click', () => {
+      startMenu.classList.toggle('active');
+    });
+
+    // Закрытие меню при клике вне его
+    window.addEventListener('click', (e) => {
+      if (!startButton.contains(e.target) && !startMenu.contains(e.target)) {
+        startMenu.classList.remove('active');
+      }
+    });
+  </script>
+</body>
+</html>
