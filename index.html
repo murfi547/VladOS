@@ -114,6 +114,48 @@
       transform: scale(0.95);
       animation: slideIn 0.5s forwards;
     }
+    /* Корзина - окно */
+.trash-window {
+  position: absolute;
+  top: 120px;
+  left: 150px;
+  width: 400px;
+  height: 300px;
+  background: #f8f8f8;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.trash-window .titlebar {
+  background: #cc0000;
+  color: white;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  cursor: move;
+}
+
+.trash-window .content {
+  flex: 1;
+  padding: 20px;
+  text-align: center;
+  font-size: 18px;
+  color: #666;
+}
+
+/* Анимация плавного появления */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+    
 
     @keyframes slideIn {
       0% {
@@ -250,6 +292,10 @@
       <img src="https://cdn-icons-png.flaticon.com/512/281/281764.png" alt="app">
       <div>Editor</div>
     </div>
+    <div class="icon" onclick="openTrash()">
+  <img src="https://cdn-icons-png.flaticon.com/512/126/126468.png" alt="trash">
+  <div>Корзина</div>
+    </div>
   </div>
 
   <div class="taskbar">
@@ -291,6 +337,20 @@
         </div>
       `;
       document.body.appendChild(win);
+    }
+    function openTrash() {
+  const win = document.createElement('div');
+  win.className = 'trash-window';
+  win.innerHTML = `
+    <div class="titlebar">
+      Корзина
+      <button onclick="this.closest('.trash-window').remove()">X</button>
+    </div>
+    <div class="content">
+      Корзина пуста
+    </div>
+  `;
+  document.body.appendChild(win);
     }
 
     function updateTime() {
