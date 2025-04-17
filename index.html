@@ -44,9 +44,11 @@
       background: rgba(0, 0, 0, 0.6);
       display: flex;
       align-items: center;
+      justify-content: space-between;
       padding: 0 10px;
       box-sizing: border-box;
       z-index: 1000;
+      color: white;
     }
 
     .taskbar .start {
@@ -57,6 +59,18 @@
       font-weight: bold;
       border-radius: 5px;
       cursor: pointer;
+    }
+
+    .taskbar .system-icons {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .taskbar .system-icons span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
 
     .window {
@@ -110,6 +124,11 @@
 
   <div class="taskbar">
     <button class="start" onclick="alert('Открыть меню VladOS')">V</button>
+    <div class="system-icons">
+      <span id="time">--:--</span>
+      <span>📶</span>
+      <span>🔔</span>
+    </div>
   </div>
 
   <script>
@@ -127,6 +146,17 @@
       `;
       document.body.appendChild(win);
     }
+
+    function updateTime() {
+      const timeEl = document.getElementById('time');
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      timeEl.textContent = `${hours}:${minutes}`;
+    }
+
+    setInterval(updateTime, 1000);
+    updateTime();
   </script>
 </body>
 </html>
