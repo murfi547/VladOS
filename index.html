@@ -147,6 +147,27 @@
     .wifi-menu li:hover {
       background: #eee;
     }
+
+    .wifi-password {
+      margin-top: 10px;
+    }
+
+    .wifi-password input {
+      width: 100%;
+      padding: 5px;
+      margin-bottom: 5px;
+      box-sizing: border-box;
+    }
+
+    .wifi-password button {
+      width: 100%;
+      padding: 5px;
+      background: #004080;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -169,13 +190,19 @@
   <div class="wifi-menu" id="wifiMenu">
     <h4>Wi-Fi сети</h4>
     <ul>
-      <li>VladOS-WiFi</li>
-      <li>Домашняя сеть</li>
-      <li>Гостевая</li>
+      <li onclick="selectWifi('VladOS-WiF')">VladOS-WiF</li>
+      <li onclick="selectWifi('Домашняя сеть')">Домашняя сеть</li>
+      <li onclick="selectWifi('Гостевая')">Гостевая</li>
     </ul>
+    <div class="wifi-password" id="wifiPassword" style="display: none;">
+      <input type="password" id="wifiPassInput" placeholder="Введите пароль">
+      <button onclick="connectToWifi()">Подключиться</button>
+    </div>
   </div>
 
   <script>
+    let selectedNetwork = '';
+
     function openWindow() {
       const win = document.createElement('div');
       win.className = 'window';
@@ -202,6 +229,22 @@
     function toggleWifiMenu() {
       const menu = document.getElementById('wifiMenu');
       menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      document.getElementById('wifiPassword').style.display = 'none';
+    }
+
+    function selectWifi(name) {
+      selectedNetwork = name;
+      document.getElementById('wifiPassword').style.display = 'block';
+    }
+
+    function connectToWifi() {
+      const pass = document.getElementById('wifiPassInput').value;
+      if (pass.trim() === '') {
+        alert('Введите пароль!');
+        return;
+      }
+      alert(`Подключение к "${selectedNetwork}" с паролем "${pass}"...`);
+      document.getElementById('wifiMenu').style.display = 'none';
     }
 
     setInterval(updateTime, 1000);
