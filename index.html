@@ -28,11 +28,17 @@
       color: white;
       margin-bottom: 20px;
       cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.5s ease;
     }
 
     .icon img {
       width: 48px;
       height: 48px;
+    }
+
+    .icon.show {
+      opacity: 1;
     }
 
     .taskbar {
@@ -49,6 +55,12 @@
       box-sizing: border-box;
       z-index: 1000;
       color: white;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .taskbar.show {
+      opacity: 1;
     }
 
     .taskbar .start {
@@ -59,6 +71,11 @@
       font-weight: bold;
       border-radius: 5px;
       cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .taskbar .start:hover {
+      background: #003366;
     }
 
     .taskbar .system-icons {
@@ -72,6 +89,12 @@
       align-items: center;
       gap: 5px;
       cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .taskbar .system-icons span.show {
+      opacity: 1;
     }
 
     .window {
@@ -87,6 +110,20 @@
       display: flex;
       flex-direction: column;
       z-index: 999;
+      opacity: 0;
+      transform: scale(0.95);
+      animation: slideIn 0.5s forwards;
+    }
+
+    @keyframes slideIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
     .window .titlebar {
@@ -112,6 +149,11 @@
       border-radius: 4px;
       cursor: pointer;
       padding: 0 8px;
+      transition: background 0.3s ease;
+    }
+
+    .titlebar button:hover {
+      background: #cc0000;
     }
 
     .wifi-menu {
@@ -121,11 +163,20 @@
       background: white;
       color: black;
       border-radius: 6px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
       padding: 10px;
       z-index: 1100;
       display: none;
       min-width: 200px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+    }
+
+    .wifi-menu.show {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .wifi-menu h4 {
@@ -167,16 +218,11 @@
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      transition: background 0.3s ease;
     }
 
-    .connecting {
-      animation: blink 1s infinite;
-    }
-
-    @keyframes blink {
-      0% { opacity: 1; }
-      50% { opacity: 0.3; }
-      100% { opacity: 1; }
+    .wifi-password button:hover {
+      background: #003366;
     }
 
     .wifi-status {
@@ -184,38 +230,17 @@
       color: white;
       margin-left: 5px;
       opacity: 0.8;
+      transition: opacity 0.3s ease-in-out;
     }
 
-    .notification {
-      background-color: #4CAF50; /* Зеленый для успешного подключения */
-      color: white;
-      padding: 15px;
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 999;
-      border-radius: 5px;
-      display: none;
+    .wifi-status.connected {
+      opacity: 1;
+      color: #4CAF50;
     }
 
-    .notification.error {
-      background-color: #f44336; /* Красный для ошибок */
-    }
-
-    .notification.warning {
-      background-color: #ff9800; /* Желтый для предупреждений */
-    }
-
-    .close-btn {
-      background: none;
-      border: none;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .notification.show {
-      display: block;
+    .wifi-status.connecting {
+      opacity: 0.6;
+      color: #FF9800;
     }
   </style>
 </head>
@@ -233,7 +258,7 @@
       <span id="time">--:--</span>
       <span id="wifiIcon" onclick="toggleWifiMenu()">📶</span>
       <span id="wifiStatus" class="wifi-status">Нет подключения</span>
-      <span onclick="showNotification('Новый файл доступен!', 'success')">🔔</span>
+      <span>🔔</span>
     </div>
   </div>
 
@@ -248,11 +273,6 @@
       <input type="password" id="wifiPassInput" placeholder="Введите пароль">
       <button onclick="connectToWifi()">Подключиться</button>
     </div>
-  </div>
-
-  <div class="notification" id="notification">
-    <span id="notificationMessage">Подключено</span>
-    <button class="close-btn" onclick="closeNotification()">X</button>
   </div>
 
   <script>
@@ -279,11 +299,12 @@
       const hours = now.getHours().toString().padStart(2, '0');
       const minutes = now.getMinutes().toString().padStart(2, '0');
       timeEl.textContent = `${hours}:${minutes}`;
+      timeEl.classList.add('updated');
     }
 
     function toggleWifiMenu() {
       const menu = document.getElementById('wifiMenu');
-      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      menu.classList.toggle('show');
       document.getElementById('wifiPassword').style.display = 'none';
     }
 
@@ -295,40 +316,27 @@
     function connectToWifi() {
       const pass = document.getElementById('wifiPassInput').value;
       if (pass.trim() === '') {
-        showNotification('Введите пароль!', 'error');
+        alert('Введите пароль!');
         return;
       }
       const wifiIcon = document.getElementById('wifiIcon');
       const wifiStatus = document.getElementById('wifiStatus');
-
-      wifiIcon.textContent = '🔄';
-      wifiIcon.classList.add('connecting');
-      wifiStatus.textContent = 'Подключение...';
-      document.getElementById('wifiMenu').style.display = 'none';
-
+      wifiStatus.textContent = `Подключение к ${selectedNetwork}...`;
+      wifiStatus.classList.remove('connecting');
+      wifiStatus.classList.add('connected');
+      wifiIcon.textContent = '✔️';
       setTimeout(() => {
-        wifiIcon.classList.remove('connecting');
+        alert(`Подключено к ${selectedNetwork}`);
+        wifiStatus.textContent = 'Подключено';
         wifiIcon.textContent = '📶';
-        wifiStatus.textContent = `${selectedNetwork} подключено`;
-        showNotification('Подключено к сети!', 'success');
       }, 2000);
     }
 
-    function showNotification(message, type) {
-      const notification = document.getElementById('notification');
-      const notificationMessage = document.getElementById('notificationMessage');
-      notificationMessage.textContent = message;
-      notification.className = `notification show ${type}`;
-      setTimeout(() => closeNotification(), 3000);
-    }
+    setInterval(updateTime, 1000);
 
-    function closeNotification() {
-      const notification = document.getElementById('notification');
-      notification.classList.remove('show');
-    }
-
-    setInterval(updateTime, 60000);
-    updateTime(); // initial time update
+    document.querySelector('.icon').classList.add('show');
+    document.querySelector('.taskbar').classList.add('show');
+    document.querySelectorAll('.taskbar .system-icons span').forEach(icon => icon.classList.add('show'));
   </script>
 </body>
 </html>
