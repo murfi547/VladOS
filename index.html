@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VladOS</title>
   <style>
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
+      height: 100%;
       font-family: sans-serif;
       background: linear-gradient(to bottom right, #2a2a72, #009ffd);
       overflow: hidden;
@@ -34,7 +36,7 @@
     }
 
     .taskbar {
-      position: absolute;
+      position: fixed;
       bottom: 0;
       left: 0;
       width: 100%;
@@ -44,6 +46,7 @@
       align-items: center;
       padding: 0 10px;
       box-sizing: border-box;
+      z-index: 1000;
     }
 
     .taskbar .start {
@@ -68,6 +71,7 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      z-index: 999;
     }
 
     .window .titlebar {
@@ -102,10 +106,10 @@
       <img src="https://cdn-icons-png.flaticon.com/512/281/281764.png" alt="app">
       <div>Editor</div>
     </div>
+  </div>
 
-    <div class="taskbar">
-      <button class="start" onclick="alert('Открыть меню VladOS')">V</button>
-    </div>
+  <div class="taskbar">
+    <button class="start" onclick="alert('Открыть меню VladOS')">V</button>
   </div>
 
   <script>
