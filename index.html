@@ -71,6 +71,7 @@
       display: flex;
       align-items: center;
       gap: 5px;
+      cursor: pointer;
     }
 
     .window {
@@ -112,6 +113,40 @@
       cursor: pointer;
       padding: 0 8px;
     }
+
+    .wifi-menu {
+      position: fixed;
+      bottom: 60px;
+      right: 10px;
+      background: white;
+      color: black;
+      border-radius: 6px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      padding: 10px;
+      z-index: 1100;
+      display: none;
+      min-width: 200px;
+    }
+
+    .wifi-menu h4 {
+      margin: 0 0 10px 0;
+    }
+
+    .wifi-menu ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .wifi-menu li {
+      padding: 5px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .wifi-menu li:hover {
+      background: #eee;
+    }
   </style>
 </head>
 <body>
@@ -126,9 +161,18 @@
     <button class="start" onclick="alert('Открыть меню VladOS')">V</button>
     <div class="system-icons">
       <span id="time">--:--</span>
-      <span>📶</span>
+      <span onclick="toggleWifiMenu()">📶</span>
       <span>🔔</span>
     </div>
+  </div>
+
+  <div class="wifi-menu" id="wifiMenu">
+    <h4>Wi-Fi сети</h4>
+    <ul>
+      <li>VladOS-WiF</li>
+      <li>Домашняя сеть</li>
+      <li>Гостевая</li>
+    </ul>
   </div>
 
   <script>
@@ -153,6 +197,11 @@
       const hours = now.getHours().toString().padStart(2, '0');
       const minutes = now.getMinutes().toString().padStart(2, '0');
       timeEl.textContent = `${hours}:${minutes}`;
+    }
+
+    function toggleWifiMenu() {
+      const menu = document.getElementById('wifiMenu');
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
     }
 
     setInterval(updateTime, 1000);
