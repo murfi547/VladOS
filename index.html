@@ -1,47 +1,49 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VladOS</title>
   <style>
-    /* Общие стили */
-    body, html {
+    * {
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+
+    html, body {
       margin: 0;
       padding: 0;
       height: 100%;
-      font-family: sans-serif;
-      background: linear-gradient(to bottom right, #2a2a72, #009ffd);
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #2a2a72, #009ffd);
       overflow: hidden;
-      user-select: none;
     }
 
-    /* Рабочий стол */
     .desktop {
       position: relative;
       width: 100vw;
       height: 100vh;
       padding: 20px;
-      box-sizing: border-box;
     }
 
-    /* Иконки */
     .icon {
-      position: absolute;
       width: 60px;
       text-align: center;
       color: white;
+      margin-bottom: 20px;
       cursor: pointer;
-      transition: transform 0.2s ease;
+      transition: transform 0.2s;
+    }
+
+    .icon:hover {
+      transform: scale(1.1);
     }
 
     .icon img {
       width: 48px;
       height: 48px;
-      pointer-events: none;
     }
 
-    /* Панель задач */
     .taskbar {
       position: fixed;
       bottom: 0;
@@ -53,13 +55,11 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 10px;
-      box-sizing: border-box;
       z-index: 1000;
       color: white;
-      backdrop-filter: blur(10px);
     }
 
-    .taskbar .start {
+    .start {
       color: white;
       background: #004080;
       border: none;
@@ -67,66 +67,30 @@
       font-weight: bold;
       border-radius: 5px;
       cursor: pointer;
-      transition: background 0.3s ease;
     }
 
-    .taskbar .start:hover {
-      background: #0066cc;
-    }
-
-    .taskbar .system-icons {
+    .system-icons {
       display: flex;
       align-items: center;
       gap: 15px;
     }
 
-    .taskbar .system-icons span {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      cursor: pointer;
-    }
-
-    /* Контекстное меню */
-    .context-menu {
-      position: absolute;
-      background: #fff;
-      color: black;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      border-radius: 4px;
-      padding: 5px 0;
-      z-index: 2000;
-      display: none;
-      min-width: 150px;
-    }
-
-    .context-menu-item {
-      padding: 8px 15px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .context-menu-item:hover {
-      background: #eee;
-    }
-
-    /* Окна приложений */
     .window {
       position: absolute;
+      top: 100px;
+      left: 100px;
       width: 400px;
       height: 300px;
-      background: #f8f8f8;
+      background: white;
       border-radius: 8px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
       display: flex;
       flex-direction: column;
-      overflow: hidden;
-      z-index: 1000;
-      animation: fadeIn 0.3s ease;
+      animation: fadeIn 0.4s ease;
     }
 
-    .window .titlebar {
-      background: #004080;
+    .titlebar {
+      background: #0066cc;
       color: white;
       padding: 8px 12px;
       display: flex;
@@ -136,224 +100,222 @@
       cursor: move;
     }
 
-    .window .content {
-      flex: 1;
-      padding: 20px;
-      overflow: auto;
-    }
-
-    .window .resize-handle {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      right: 0;
-      bottom: 0;
-      cursor: se-resize;
-      background: transparent;
-    }
-
-    /* Анимация появления */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to   { opacity: 1; transform: scale(1); }
-    }
-
-    /* Меню "Пуск" */
-    .start-menu {
-      position: absolute;
-      bottom: 60px;
-      left: 10px;
-      width: 200px;
-      background: #ffffff;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      display: none;
-      z-index: 2000;
-    }
-
-    .start-menu-item {
-      padding: 10px;
+    .titlebar button {
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 4px;
       cursor: pointer;
-      border-bottom: 1px solid #eee;
+      padding: 0 8px;
     }
 
-    .start-menu-item:hover {
-      background: #f0f0f0;
+    .content {
+      flex: 1;
+      padding: 10px;
     }
 
-    /* Уведомления */
-    .notification {
+    .wifi-menu {
       position: fixed;
       bottom: 60px;
-      right: 20px;
-      background: #323232;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 5px;
+      right: 10px;
+      background: white;
+      color: black;
+      border-radius: 6px;
       box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      padding: 10px;
+      z-index: 1100;
       display: none;
-      z-index: 3000;
+      min-width: 200px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .wifi-menu h4 {
+      margin: 0 0 10px 0;
+    }
+
+    .wifi-menu ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .wifi-menu li {
+      padding: 5px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .wifi-menu li:hover {
+      background: #eee;
+    }
+
+    .wifi-password input {
+      width: 100%;
+      padding: 5px;
+      margin-bottom: 5px;
+    }
+
+    .wifi-password button {
+      width: 100%;
+      padding: 5px;
+      background: #004080;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .wifi-status {
+      font-size: 12px;
+      color: white;
+      opacity: 0.8;
+    }
+
+    .notification {
+      position: fixed;
+      right: 20px;
+      bottom: 70px;
+      background: #222;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 6px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      animation: slideIn 0.4s ease;
+      z-index: 1200;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(100px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    textarea {
+      width: 100%;
+      height: 100%;
+      border: none;
+      resize: none;
+      font-family: monospace;
     }
   </style>
 </head>
 <body>
-  <div class="desktop" id="desktop">
-    <div class="icon" style="top: 20px; left: 20px;" draggable="false" onclick="openWindow('Editor')">
-      <img src="https://cdn-icons-png.flaticon.com/512/281/281764.png" alt="Editor" />
+  <div class="desktop">
+    <div class="icon" onclick="openWindow()">
+      <img src="https://cdn-icons-png.flaticon.com/512/281/281764.png" alt="app">
       <div>Editor</div>
     </div>
-        <div class="icon" style="top: 100px; left: 20px;" draggable="false" onclick="openWindow('Terminal')">
-      <img src="https://cdn-icons-png.flaticon.com/512/2541/2541988.png" alt="Terminal" />
-      <div>Terminal</div>
-    </div>
   </div>
 
-  <!-- Контекстное меню -->
-  <div class="context-menu" id="contextMenu">
-    <div class="context-menu-item" onclick="openWindow('New App')">📦 Новое приложение</div>
-    <div class="context-menu-item" onclick="showNotification('Обновление рабочего стола!')">🔔 Показать уведомление</div>
-  </div>
-
-  <!-- Панель задач -->
   <div class="taskbar">
-    <button class="start" onclick="toggleStartMenu()">Пуск</button>
+    <button class="start" onclick="alert('Открыть меню VladOS')">V</button>
     <div class="system-icons">
-      <span onclick="showNotification('Настройки пока недоступны')">⚙️</span>
-      <span onclick="showNotification(new Date().toLocaleTimeString())">🕒</span>
+      <span id="time">--:--</span>
+      <span id="wifiIcon" onclick="toggleWifiMenu()">📶</span>
+      <span id="wifiStatus" class="wifi-status">Нет подключения</span>
+      <span onclick="pushNotification('Новое уведомление!')">🔔</span>
     </div>
   </div>
 
-  <!-- Меню Пуск -->
-  <div class="start-menu" id="startMenu">
-    <div class="start-menu-item" onclick="openWindow('Блокнот')">📝 Блокнот</div>
-    <div class="start-menu-item" onclick="openWindow('Терминал')">💻 Терминал</div>
-    <div class="start-menu-item" onclick="openWindow('Проводник')">📁 Проводник</div>
+  <div class="wifi-menu" id="wifiMenu">
+    <h4>Wi-Fi сети</h4>
+    <ul>
+      <li onclick="selectWifi('VladOS-WiF')">VladOS-WiF</li>
+      <li onclick="selectWifi('Домашняя сеть')">Домашняя сеть</li>
+      <li onclick="selectWifi('Гостевая')">Гостевая</li>
+    </ul>
+    <div class="wifi-password" id="wifiPassword" style="display: none;">
+      <input type="password" id="wifiPassInput" placeholder="Введите пароль">
+      <button onclick="connectToWifi()">Подключиться</button>
+    </div>
   </div>
 
-  <!-- Уведомление -->
-  <div class="notification" id="notification"></div>
-
-  <!-- Скрипты -->
   <script>
-    const desktop = document.getElementById('desktop');
-    const contextMenu = document.getElementById('contextMenu');
-    const startMenu = document.getElementById('startMenu');
-    const notification = document.getElementById('notification');
+    let selectedNetwork = '';
 
-    // Контекстное меню
-    desktop.addEventListener('contextmenu', e => {
-      e.preventDefault();
-      contextMenu.style.left = e.pageX + 'px';
-      contextMenu.style.top = e.pageY + 'px';
-      contextMenu.style.display = 'block';
-    });
-
-    document.addEventListener('click', () => {
-      contextMenu.style.display = 'none';
-      startMenu.style.display = 'none';
-    });
-
-    // Меню Пуск
-    function toggleStartMenu() {
-      startMenu.style.display = (startMenu.style.display === 'block') ? 'none' : 'block';
+    function updateTime() {
+      const timeEl = document.getElementById('time');
+      const now = new Date();
+      timeEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 
-    // Уведомление
-    function showNotification(message) {
-      notification.textContent = message;
-      notification.style.display = 'block';
-      setTimeout(() => notification.style.display = 'none', 3000);
+    function toggleWifiMenu() {
+      const menu = document.getElementById('wifiMenu');
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      document.getElementById('wifiPassword').style.display = 'none';
     }
 
-    // Создание окна
-    function openWindow(title) {
+    function selectWifi(name) {
+      selectedNetwork = name;
+      document.getElementById('wifiPassword').style.display = 'block';
+    }
+
+    function connectToWifi() {
+      const pass = document.getElementById('wifiPassInput').value;
+      if (pass.trim() === '') {
+        alert('Введите пароль!');
+        return;
+      }
+      const wifiIcon = document.getElementById('wifiIcon');
+      const wifiStatus = document.getElementById('wifiStatus');
+      wifiIcon.textContent = '🔄';
+      wifiStatus.textContent = 'Подключение...';
+
+      setTimeout(() => {
+        wifiIcon.textContent = '📡';
+        wifiStatus.textContent = `Подключено: ${selectedNetwork}`;
+        document.getElementById('wifiMenu').style.display = 'none';
+        pushNotification(`Подключено к сети "${selectedNetwork}"`);
+      }, 2000);
+    }
+
+    function openWindow() {
       const win = document.createElement('div');
       win.className = 'window';
-      win.style.left = Math.random() * 300 + 'px';
-      win.style.top = Math.random() * 200 + 'px';
       win.innerHTML = `
-        <div class="titlebar">
-          <span>${title}</span>
-          <span style="cursor: pointer;" onclick="this.closest('.window').remove()">❌</span>
+        <div class="titlebar" onmousedown="startDrag(event, this.parentElement)">
+          Text Editor
+          <button onclick="this.closest('.window').remove()">X</button>
         </div>
         <div class="content">
-          Это окно "${title}".
+          <textarea>.vtxt файл</textarea>
         </div>
-        <div class="resize-handle"></div>
       `;
-      desktop.appendChild(win);
-      makeDraggable(win);
-      makeResizable(win);
+      document.body.appendChild(win);
     }
 
-    // Перетаскивание окон
-    function makeDraggable(win) {
-      const bar = win.querySelector('.titlebar');
-      let isDragging = false, offsetX, offsetY;
-
-      bar.addEventListener('mousedown', e => {
-        isDragging = true;
-        offsetX = e.clientX - win.offsetLeft;
-        offsetY = e.clientY - win.offsetTop;
-        win.style.zIndex = 2000;
-      });
-
-      document.addEventListener('mousemove', e => {
-        if (isDragging) {
-          win.style.left = (e.clientX - offsetX) + 'px';
-          win.style.top = (e.clientY - offsetY) + 'px';
-        }
-      });
-
-      document.addEventListener('mouseup', () => isDragging = false);
+    function pushNotification(text) {
+      const note = document.createElement('div');
+      note.className = 'notification';
+      note.textContent = text;
+      document.body.appendChild(note);
+      setTimeout(() => note.remove(), 4000);
     }
 
-    // Изменение размеров окна
-    function makeResizable(win) {
-      const handle = win.querySelector('.resize-handle');
-      let isResizing = false, startX, startY, startWidth, startHeight;
+    function startDrag(e, element) {
+      let offsetX = e.clientX - element.offsetLeft;
+      let offsetY = e.clientY - element.offsetTop;
 
-      handle.addEventListener('mousedown', e => {
-        isResizing = true;
-        startX = e.clientX;
-        startY = e.clientY;
-        startWidth = win.offsetWidth;
-        startHeight = win.offsetHeight;
-        e.preventDefault();
-        e.stopPropagation();
-      });
+      function move(e) {
+        element.style.left = e.clientX - offsetX + 'px';
+        element.style.top = e.clientY - offsetY + 'px';
+      }
 
-      document.addEventListener('mousemove', e => {
-        if (isResizing) {
-          win.style.width = (startWidth + e.clientX - startX) + 'px';
-          win.style.height = (startHeight + e.clientY - startY) + 'px';
-        }
-      });
+      function stop() {
+        document.removeEventListener('mousemove', move);
+        document.removeEventListener('mouseup', stop);
+      }
 
-      document.addEventListener('mouseup', () => isResizing = false);
+      document.addEventListener('mousemove', move);
+      document.addEventListener('mouseup', stop);
     }
 
-    // Перетаскивание иконок
-    const icons = document.querySelectorAll('.icon');
-    icons.forEach(icon => {
-      let offsetX, offsetY, dragging = false;
-
-      icon.addEventListener('mousedown', e => {
-        offsetX = e.offsetX;
-        offsetY = e.offsetY;
-        dragging = true;
-      });
-
-      document.addEventListener('mousemove', e => {
-        if (dragging) {
-          icon.style.left = (e.pageX - offsetX) + 'px';
-          icon.style.top = (e.pageY - offsetY) + 'px';
-        }
-      });
-
-      document.addEventListener('mouseup', () => dragging = false);
-    });
+    setInterval(updateTime, 1000);
+    updateTime();
   </script>
 </body>
 </html>
