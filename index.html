@@ -185,6 +185,38 @@
       margin-left: 5px;
       opacity: 0.8;
     }
+
+    .notification {
+      background-color: #4CAF50; /* Зеленый для успешного подключения */
+      color: white;
+      padding: 15px;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 999;
+      border-radius: 5px;
+      display: none;
+    }
+
+    .notification.error {
+      background-color: #f44336; /* Красный для ошибок */
+    }
+
+    .notification.warning {
+      background-color: #ff9800; /* Желтый для предупреждений */
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .notification.show {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -201,7 +233,7 @@
       <span id="time">--:--</span>
       <span id="wifiIcon" onclick="toggleWifiMenu()">📶</span>
       <span id="wifiStatus" class="wifi-status">Нет подключения</span>
-      <span>🔔</span>
+      <span onclick="showNotification('Новый файл доступен!', 'success')">🔔</span>
     </div>
   </div>
 
@@ -216,6 +248,11 @@
       <input type="password" id="wifiPassInput" placeholder="Введите пароль">
       <button onclick="connectToWifi()">Подключиться</button>
     </div>
+  </div>
+
+  <div class="notification" id="notification">
+    <span id="notificationMessage">Подключено</span>
+    <button class="close-btn" onclick="closeNotification()">X</button>
   </div>
 
   <script>
@@ -258,7 +295,7 @@
     function connectToWifi() {
       const pass = document.getElementById('wifiPassInput').value;
       if (pass.trim() === '') {
-        alert('Введите пароль!');
+        showNotification('Введите пароль!', 'error');
         return;
       }
       const wifiIcon = document.getElementById('wifiIcon');
@@ -271,14 +308,27 @@
 
       setTimeout(() => {
         wifiIcon.classList.remove('connecting');
-        wifiIcon.textContent = '📡'; // Значок подключения с сигналом
-        wifiStatus.textContent = `Подключено: ${selectedNetwork}`;
-        
+        wifiIcon.textContent = '📶';
+        wifiStatus.textContent = `${selectedNetwork} подключено`;
+        showNotification('Подключено к сети!', 'success');
       }, 2000);
     }
 
-    setInterval(updateTime, 1000);
-    updateTime();
+    function showNotification(message, type) {
+      const notification = document.getElementById('notification');
+      const notificationMessage = document.getElementById('notificationMessage');
+      notificationMessage.textContent = message;
+      notification.className = `notification show ${type}`;
+      setTimeout(() => closeNotification(), 3000);
+    }
+
+    function closeNotification() {
+      const notification = document.getElementById('notification');
+      notification.classList.remove('show');
+    }
+
+    setInterval(updateTime, 60000);
+    updateTime(); // initial time update
   </script>
 </body>
 </html>
