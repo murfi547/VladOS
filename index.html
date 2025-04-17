@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>VladOS</title>
   <style>
-    html, body {
+    /* Общие стили */
+    body, html {
       margin: 0;
       padding: 0;
       height: 100%;
@@ -15,6 +16,7 @@
       user-select: none;
     }
 
+    /* Рабочий стол */
     .desktop {
       position: relative;
       width: 100vw;
@@ -23,6 +25,7 @@
       box-sizing: border-box;
     }
 
+    /* Иконки */
     .icon {
       position: absolute;
       width: 60px;
@@ -38,6 +41,7 @@
       pointer-events: none;
     }
 
+    /* Панель задач */
     .taskbar {
       position: fixed;
       bottom: 0;
@@ -83,6 +87,7 @@
       cursor: pointer;
     }
 
+    /* Контекстное меню */
     .context-menu {
       position: absolute;
       background: #fff;
@@ -104,82 +109,250 @@
     .context-menu-item:hover {
       background: #eee;
     }
+
+    /* Окна приложений */
+    .window {
+      position: absolute;
+      width: 400px;
+      height: 300px;
+      background: #f8f8f8;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .window .titlebar {
+      background: #004080;
+      color: white;
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      cursor: move;
+    }
+
+    .window .content {
+      flex: 1;
+      padding: 20px;
+      overflow: auto;
+    }
+
+    .window .resize-handle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      right: 0;
+      bottom: 0;
+      cursor: se-resize;
+      background: transparent;
+    }
+
+    /* Анимация появления */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    /* Меню "Пуск" */
+    .start-menu {
+      position: absolute;
+      bottom: 60px;
+      left: 10px;
+      width: 200px;
+      background: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      display: none;
+      z-index: 2000;
+    }
+
+    .start-menu-item {
+      padding: 10px;
+      cursor: pointer;
+      border-bottom: 1px solid #eee;
+    }
+
+    .start-menu-item:hover {
+      background: #f0f0f0;
+    }
+
+    /* Уведомления */
+    .notification {
+      position: fixed;
+      bottom: 60px;
+      right: 20px;
+      background: #323232;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      display: none;
+      z-index: 3000;
+    }
   </style>
 </head>
 <body>
   <div class="desktop" id="desktop">
-    <div class="icon" style="top: 20px; left: 20px;" draggable="false">
-      <img src="https://cdn-icons-png.flaticon.com/512/281/281764.png" alt="app" />
+    <div class="icon" style="top: 20px; left: 20px;" draggable="false" onclick="openWindow('Editor')">
+      <img src="https://cdn-icons-png.flaticon.com/512/281/281764.png" alt="Editor" />
       <div>Editor</div>
     </div>
-  </div>
-
-  <div class="taskbar">
-    <button class="start" onclick="alert('Открыть меню VladOS')">V</button>
-    <div class="system-icons">
-      <span id="time">--:--</span>
-      <span>📶</span>
-      <span>🔔</span>
+        <div class="icon" style="top: 100px; left: 20px;" draggable="false" onclick="openWindow('Terminal')">
+      <img src="https://cdn-icons-png.flaticon.com/512/2541/2541988.png" alt="Terminal" />
+      <div>Terminal</div>
     </div>
   </div>
 
+  <!-- Контекстное меню -->
   <div class="context-menu" id="contextMenu">
-    <div class="context-menu-item" onclick="alert('Создать файл')">📄 Новый файл</div>
-    <div class="context-menu-item" onclick="alert('Сменить фон')">🖼 Сменить обои</div>
-    <div class="context-menu-item" onclick="location.reload()">🔄 Обновить</div>
+    <div class="context-menu-item" onclick="openWindow('New App')">📦 Новое приложение</div>
+    <div class="context-menu-item" onclick="showNotification('Обновление рабочего стола!')">🔔 Показать уведомление</div>
   </div>
 
+  <!-- Панель задач -->
+  <div class="taskbar">
+    <button class="start" onclick="toggleStartMenu()">Пуск</button>
+    <div class="system-icons">
+      <span onclick="showNotification('Настройки пока недоступны')">⚙️</span>
+      <span onclick="showNotification(new Date().toLocaleTimeString())">🕒</span>
+    </div>
+  </div>
+
+  <!-- Меню Пуск -->
+  <div class="start-menu" id="startMenu">
+    <div class="start-menu-item" onclick="openWindow('Блокнот')">📝 Блокнот</div>
+    <div class="start-menu-item" onclick="openWindow('Терминал')">💻 Терминал</div>
+    <div class="start-menu-item" onclick="openWindow('Проводник')">📁 Проводник</div>
+  </div>
+
+  <!-- Уведомление -->
+  <div class="notification" id="notification"></div>
+
+  <!-- Скрипты -->
   <script>
-    // Обновление времени
-    function updateTime() {
-      const timeEl = document.getElementById('time');
-      const now = new Date();
-      const hours = now.getHours().toString().padStart(2, '0');
-      const minutes = now.getMinutes().toString().padStart(2, '0');
-      timeEl.textContent = `${hours}:${minutes}`;
-    }
-
-    setInterval(updateTime, 1000);
-    updateTime();
-
-    // Контекстное меню
     const desktop = document.getElementById('desktop');
     const contextMenu = document.getElementById('contextMenu');
+    const startMenu = document.getElementById('startMenu');
+    const notification = document.getElementById('notification');
 
-    desktop.addEventListener('contextmenu', (e) => {
+    // Контекстное меню
+    desktop.addEventListener('contextmenu', e => {
       e.preventDefault();
-      contextMenu.style.left = `${e.pageX}px`;
-      contextMenu.style.top = `${e.pageY}px`;
+      contextMenu.style.left = e.pageX + 'px';
+      contextMenu.style.top = e.pageY + 'px';
       contextMenu.style.display = 'block';
     });
 
     document.addEventListener('click', () => {
       contextMenu.style.display = 'none';
+      startMenu.style.display = 'none';
     });
+
+    // Меню Пуск
+    function toggleStartMenu() {
+      startMenu.style.display = (startMenu.style.display === 'block') ? 'none' : 'block';
+    }
+
+    // Уведомление
+    function showNotification(message) {
+      notification.textContent = message;
+      notification.style.display = 'block';
+      setTimeout(() => notification.style.display = 'none', 3000);
+    }
+
+    // Создание окна
+    function openWindow(title) {
+      const win = document.createElement('div');
+      win.className = 'window';
+      win.style.left = Math.random() * 300 + 'px';
+      win.style.top = Math.random() * 200 + 'px';
+      win.innerHTML = `
+        <div class="titlebar">
+          <span>${title}</span>
+          <span style="cursor: pointer;" onclick="this.closest('.window').remove()">❌</span>
+        </div>
+        <div class="content">
+          Это окно "${title}".
+        </div>
+        <div class="resize-handle"></div>
+      `;
+      desktop.appendChild(win);
+      makeDraggable(win);
+      makeResizable(win);
+    }
+
+    // Перетаскивание окон
+    function makeDraggable(win) {
+      const bar = win.querySelector('.titlebar');
+      let isDragging = false, offsetX, offsetY;
+
+      bar.addEventListener('mousedown', e => {
+        isDragging = true;
+        offsetX = e.clientX - win.offsetLeft;
+        offsetY = e.clientY - win.offsetTop;
+        win.style.zIndex = 2000;
+      });
+
+      document.addEventListener('mousemove', e => {
+        if (isDragging) {
+          win.style.left = (e.clientX - offsetX) + 'px';
+          win.style.top = (e.clientY - offsetY) + 'px';
+        }
+      });
+
+      document.addEventListener('mouseup', () => isDragging = false);
+    }
+
+    // Изменение размеров окна
+    function makeResizable(win) {
+      const handle = win.querySelector('.resize-handle');
+      let isResizing = false, startX, startY, startWidth, startHeight;
+
+      handle.addEventListener('mousedown', e => {
+        isResizing = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        startWidth = win.offsetWidth;
+        startHeight = win.offsetHeight;
+        e.preventDefault();
+        e.stopPropagation();
+      });
+
+      document.addEventListener('mousemove', e => {
+        if (isResizing) {
+          win.style.width = (startWidth + e.clientX - startX) + 'px';
+          win.style.height = (startHeight + e.clientY - startY) + 'px';
+        }
+      });
+
+      document.addEventListener('mouseup', () => isResizing = false);
+    }
 
     // Перетаскивание иконок
     const icons = document.querySelectorAll('.icon');
-
     icons.forEach(icon => {
-      let offsetX, offsetY, isDragging = false;
+      let offsetX, offsetY, dragging = false;
 
-      icon.addEventListener('mousedown', (e) => {
-        isDragging = true;
+      icon.addEventListener('mousedown', e => {
         offsetX = e.offsetX;
         offsetY = e.offsetY;
-        icon.style.zIndex = 1000;
+        dragging = true;
       });
 
-      document.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        icon.style.left = `${e.pageX - offsetX}px`;
-        icon.style.top = `${e.pageY - offsetY}px`;
+      document.addEventListener('mousemove', e => {
+        if (dragging) {
+          icon.style.left = (e.pageX - offsetX) + 'px';
+          icon.style.top = (e.pageY - offsetY) + 'px';
+        }
       });
 
-      document.addEventListener('mouseup', () => {
-        isDragging = false;
-        icon.style.zIndex = '';
-      });
+      document.addEventListener('mouseup', () => dragging = false);
     });
   </script>
 </body>
