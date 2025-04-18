@@ -18,21 +18,16 @@ jobs:
           node-version: '14'
 
       - name: Install dependencies
-        run: npm install && npm install --save-dev electron-builder
-
+        run: npm install
 
       - name: Build executable
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: npm run dist
+
       - name: Check directory after build
-        run: ls -R
-      - name: Author
-        run: git config --global user.email "vladiusha13@outlook.com" && git config --global user.name "murfi547"
-      - name: Add dist
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: git add dist/ && git commit -m "Добавлена папка dist" && git push origin main
+        run: dir dist
 
-
-
+      - name: Upload dist as an artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist/
