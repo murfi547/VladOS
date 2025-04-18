@@ -1,321 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>VladOS</title>
   <style>
-    * {
-      box-sizing: border-box;
-      transition: all 0.3s ease;
-    }
-
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #2a2a72, #009ffd);
-      overflow: hidden;
-    }
-
-    .desktop {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      padding: 20px;
-    }
-
-    .icon {
-      width: 60px;
-      text-align: center;
+      background: linear-gradient(to right, #141e30, #243b55);
       color: white;
-      margin-bottom: 20px;
-      cursor: pointer;
-      transition: transform 0.2s;
+      font-family: 'Segoe UI', sans-serif;
     }
-
-    .icon:hover {
-      transform: scale(1.1);
-    }
-
-    .icon img {
-      width: 48px;
-      height: 48px;
-    }
-
     .taskbar {
-      position: fixed;
+      position: absolute;
       bottom: 0;
       left: 0;
-      width: 100%;
-      height: 50px;
-      background: rgba(0, 0, 0, 0.6);
+      right: 0;
+      height: 40px;
+      background-color: rgba(0, 0, 0, 0.7);
       display: flex;
       align-items: center;
-      justify-content: space-between;
       padding: 0 10px;
-      z-index: 1000;
-      color: white;
     }
-
-    .start {
-      color: white;
-      background: #004080;
-      border: none;
-      padding: 5px 15px;
-      font-weight: bold;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .system-icons {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .window {
-      position: absolute;
-      top: 100px;
-      left: 100px;
-      width: 400px;
-      height: 300px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-      display: flex;
-      flex-direction: column;
-      animation: fadeIn 0.4s ease;
-    }
-
-    .titlebar {
-      background: #0066cc;
-      color: white;
-      padding: 8px 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: bold;
-      cursor: move;
-    }
-
-    .titlebar button {
-      background: red;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      padding: 0 8px;
-    }
-
-    .content {
-      flex: 1;
-      padding: 10px;
-    }
-
-    .wifi-menu {
-      position: fixed;
-      bottom: 60px;
-      right: 10px;
-      background: white;
-      color: black;
-      border-radius: 6px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      padding: 10px;
-      z-index: 1100;
-      display: none;
-      min-width: 200px;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .wifi-menu h4 {
-      margin: 0 0 10px 0;
-    }
-
-    .wifi-menu ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .wifi-menu li {
-      padding: 5px;
+    .start-button {
+      width: 32px;
+      height: 32px;
+      background: orange;
+      margin-right: 10px;
       border-radius: 4px;
       cursor: pointer;
     }
-
-    .wifi-menu li:hover {
-      background: #eee;
-    }
-
-    .wifi-password input {
-      width: 100%;
-      padding: 5px;
-      margin-bottom: 5px;
-    }
-
-    .wifi-password button {
-      width: 100%;
-      padding: 5px;
-      background: #004080;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .wifi-status {
-      font-size: 12px;
-      color: white;
-      opacity: 0.8;
-    }
-
-    .notification {
-      position: fixed;
-      right: 20px;
-      bottom: 70px;
-      background: #222;
-      color: white;
-      padding: 10px 15px;
-      border-radius: 6px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-      animation: slideIn 0.4s ease;
-      z-index: 1200;
-    }
-
-    @keyframes slideIn {
-      from { transform: translateY(100px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    textarea {
-      width: 100%;
-      height: 100%;
-      border: none;
-      resize: none;
-      font-family: monospace;
+    .clock {
+      margin-left: auto;
     }
   </style>
 </head>
 <body>
-  <div class="desktop">
-    <div class="icon" onclick="openWindow()">
-      <img src="https://cdn-icons-png.flaticon.com/512/281/281764.png" alt="app">
-      <div>Editor</div>
-    </div>
-  </div>
-
   <div class="taskbar">
-    <button class="start" onclick="alert('Открыть меню VladOS')">V</button>
-    <div class="system-icons">
-      <span id="time">--:--</span>
-      <span id="wifiIcon" onclick="toggleWifiMenu()">📶</span>
-      <span id="wifiStatus" class="wifi-status">Нет подключения</span>
-      <span onclick="pushNotification('Новое уведомление!')">🔔</span>
-    </div>
+    <div class="start-button" onclick="alert('Start Menu (будет позже)')"></div>
+    <div class="clock" id="clock"></div>
   </div>
 
-  <div class="wifi-menu" id="wifiMenu">
-    <h4>Wi-Fi сети</h4>
-    <ul>
-      <li onclick="selectWifi('VladOS-WiF')">VladOS-WiF</li>
-      <li onclick="selectWifi('Домашняя сеть')">Домашняя сеть</li>
-      <li onclick="selectWifi('Гостевая')">Гостевая</li>
-    </ul>
-    <div class="wifi-password" id="wifiPassword" style="display: none;">
-      <input type="password" id="wifiPassInput" placeholder="Введите пароль">
-      <button onclick="connectToWifi()">Подключиться</button>
-    </div>
-  </div>
-
-  <script>
-    let selectedNetwork = '';
-
-    function updateTime() {
-      const timeEl = document.getElementById('time');
-      const now = new Date();
-      timeEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    }
-
-    function toggleWifiMenu() {
-      const menu = document.getElementById('wifiMenu');
-      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-      document.getElementById('wifiPassword').style.display = 'none';
-    }
-
-    function selectWifi(name) {
-      selectedNetwork = name;
-      document.getElementById('wifiPassword').style.display = 'block';
-    }
-
-    function connectToWifi() {
-      const pass = document.getElementById('wifiPassInput').value;
-      if (pass.trim() === '') {
-        alert('Введите пароль!');
-        return;
-      }
-      const wifiIcon = document.getElementById('wifiIcon');
-      const wifiStatus = document.getElementById('wifiStatus');
-      wifiIcon.textContent = '🔄';
-      wifiStatus.textContent = 'Подключение...';
-
-      setTimeout(() => {
-        wifiIcon.textContent = '📡';
-        wifiStatus.textContent = `Подключено: ${selectedNetwork}`;
-        document.getElementById('wifiMenu').style.display = 'none';
-        pushNotification(`Подключено к сети "${selectedNetwork}"`);
-      }, 2000);
-    }
-
-    function openWindow() {
-      const win = document.createElement('div');
-      win.className = 'window';
-      win.innerHTML = `
-        <div class="titlebar" onmousedown="startDrag(event, this.parentElement)">
-          Text Editor
-          <button onclick="this.closest('.window').remove()">X</button>
-        </div>
-        <div class="content">
-          <textarea>.vtxt файл</textarea>
-        </div>
-      `;
-      document.body.appendChild(win);
-    }
-
-    function pushNotification(text) {
-      const note = document.createElement('div');
-      note.className = 'notification';
-      note.textContent = text;
-      document.body.appendChild(note);
-      setTimeout(() => note.remove(), 4000);
-    }
-
-    function startDrag(e, element) {
-      let offsetX = e.clientX - element.offsetLeft;
-      let offsetY = e.clientY - element.offsetTop;
-
-      function move(e) {
-        element.style.left = e.clientX - offsetX + 'px';
-        element.style.top = e.clientY - offsetY + 'px';
-      }
-
-      function stop() {
-        document.removeEventListener('mousemove', move);
-        document.removeEventListener('mouseup', stop);
-      }
-
-      document.addEventListener('mousemove', move);
-      document.addEventListener('mouseup', stop);
-    }
-
-    setInterval(updateTime, 1000);
-    updateTime();
-  </script>
+  <script src="renderer.js"></script>
 </body>
 </html>
