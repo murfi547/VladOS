@@ -27,3 +27,8 @@ jobs:
         run: npm run dist
       - name: Check directory after build
         run: ls -R
+      - name: Add dist
+        run: git add dist/ && git commit -m "Добавлена папка dist" && git push origin main
+
+
+
