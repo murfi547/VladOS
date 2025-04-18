@@ -4,8 +4,17 @@
     "description": "VladOS — своя OS-программа",
     "main": "main.js",
     "scripts": {
-      "start": "electron ."
+      "start": "electron .",
+        "dist": "electron-builder"
     },
+    "build": {
+  "appId": "com.vlados.app",
+  "productName": "VladOS",
+  "win": {
+    "target": "nsis"
+  }
+},
+
     "author": "Ты",
     "license": "MIT",
     "devDependencies": {
