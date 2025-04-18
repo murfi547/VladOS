@@ -22,6 +22,8 @@ jobs:
         run: npm install && npm install --save-dev electron-builder
 
       - name: Build executable
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: npm run dist
 
       - name: Upload dist as artifact
