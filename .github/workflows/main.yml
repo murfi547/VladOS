@@ -22,4 +22,6 @@ jobs:
 
 
       - name: Build executable
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: npm run dist
