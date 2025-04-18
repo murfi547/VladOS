@@ -25,3 +25,5 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: npm run dist
+      - name: Check directory after build
+        run: ls -R
